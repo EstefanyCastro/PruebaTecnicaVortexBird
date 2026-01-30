@@ -1,0 +1,43 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Build
+target/
+bin/
+out/
+*.class
+*.jar
+*.war
+
+# Maven
+.m2/
+dependency-reduced-pom.xml
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+*.pid
+
+# Other
+.gradle/
+build/
+*.ear
+.settings/
