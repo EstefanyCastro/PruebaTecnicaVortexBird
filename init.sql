@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS customers (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     password VARCHAR(255) NOT NULL,
+    role VARCHAR(20) DEFAULT 'CUSTOMER' NOT NULL,
     is_enabled BOOLEAN DEFAULT true NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS ticket_purchases (
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
 CREATE INDEX IF NOT EXISTS idx_customers_enabled ON customers(is_enabled);
+CREATE INDEX IF NOT EXISTS idx_customers_role ON customers(role);
 CREATE INDEX IF NOT EXISTS idx_purchases_customer ON ticket_purchases(customer_id);
 CREATE INDEX IF NOT EXISTS idx_purchases_movie ON ticket_purchases(movie_id);
 CREATE INDEX IF NOT EXISTS idx_purchases_confirmation ON ticket_purchases(confirmation_code);
@@ -58,7 +60,8 @@ INSERT INTO movies (title, description, image_url, duration_minutes, genre, pric
 ('The Dark Knight', 'Cuando la amenaza conocida como el Joker emerge de su misterioso pasado, causa estragos y caos en la gente de Gotham.', 'https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg', 152, 'Acción', 13500, true),
 ('Pulp Fiction', 'Las vidas de dos sicarios de la mafia, un boxeador, la esposa de un gángster y dos bandidos se entrelazan en cuatro historias de violencia y redención.', 'https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg', 154, 'Drama', 11000, true);
 
--- Insert sample customer (password: Test1234)
-INSERT INTO customers (email, phone, first_name, last_name, password, is_enabled, created_at) VALUES
-('test@example.com', '3001234567', 'Test', 'User', '$2a$10$rN7pVQgLbVLmPm1P5KyZPu1xJ0XrLrYGFJqJ5YZmvZvQX6nzqZvQa', true, CURRENT_TIMESTAMP);
+-- Insert sample customers (password: Test1234 - plain text for development)
+INSERT INTO customers (email, phone, first_name, last_name, password, role, is_enabled, created_at) VALUES
+('admin@movieticket.com', '3001234567', 'Admin', 'Sistema', 'Admin1234', 'ADMIN', true, CURRENT_TIMESTAMP),
+('cliente@example.com', '3009876543', 'Cliente', 'Demo', 'Cliente1234', 'CUSTOMER', true, CURRENT_TIMESTAMP);
 

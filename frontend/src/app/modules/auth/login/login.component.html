@@ -1,0 +1,100 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="icon-circle">
+        <i class="bi bi-person-lock"></i>
+      </div>
+      <h2>Iniciar Sesión</h2>
+      <p class="subtitle">Ingresa tus credenciales para continuar</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Email Field -->
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <div class="input-group">
+          <span class="input-group-text">
+            <i class="bi bi-envelope"></i>
+          </span>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            formControlName="email"
+            placeholder="ejemplo@correo.com"
+            [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+          />
+        </div>
+        <div class="text-danger small mt-1" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          {{ getErrorMessage('email') }}
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="mb-3">
+        <label for="password" class="form-label">Contraseña</label>
+        <div class="input-group">
+          <span class="input-group-text">
+            <i class="bi bi-lock"></i>
+          </span>
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-control"
+            id="password"
+            formControlName="password"
+            placeholder="Ingresa tu contraseña"
+            [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          />
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            (click)="togglePassword()"
+          >
+            <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+          </button>
+        </div>
+        <div class="text-danger small mt-1" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          {{ getErrorMessage('password') }}
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="alert alert-danger" *ngIf="errorMessage">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="btn btn-primary w-100 submit-btn"
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">
+          <i class="bi bi-box-arrow-in-right me-2"></i>
+          Iniciar Sesión
+        </span>
+        <span *ngIf="loading">
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Iniciando sesión...
+        </span>
+      </button>
+
+      <!-- Register Link -->
+      <div class="text-center mt-3">
+        <p class="mb-0">
+          ¿No tienes cuenta?
+          <a routerLink="/auth/register" class="register-link">Registrarse</a>
+        </p>
+      </div>
+
+      <!-- Back to Home -->
+      <div class="text-center mt-2">
+        <a routerLink="/home" class="text-muted small">
+          <i class="bi bi-arrow-left me-1"></i>
+          Volver al inicio
+        </a>
+      </div>
+    </form>
+  </div>
+</div>

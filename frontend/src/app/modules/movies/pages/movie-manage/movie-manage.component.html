@@ -1,0 +1,121 @@
+<div class="manage-container">
+  <div class="manage-header">
+    <div class="header-left">
+      <button class="btn btn-secondary me-3" (click)="goBack()">
+        <i class="bi bi-arrow-left me-2"></i>
+        Volver
+      </button>
+      <h1>
+        <i class="bi bi-film me-2"></i>
+        Gestión de películas
+      </h1>
+    </div>
+    <button class="btn btn-primary" (click)="createMovie()">
+      <i class="bi bi-plus-circle me-2"></i>
+      Crear
+    </button>
+  </div>
+
+  <!-- Confirmation Panel -->
+  <div class="confirmation-panel" *ngIf="showConfirmation && movieToToggle">
+    <div class="confirmation-content">
+      <div class="confirmation-icon">
+        <i class="bi bi-exclamation-triangle"></i>
+      </div>
+      <h3>Confirmar Acción</h3>
+      <p>
+        ¿Estás seguro de <strong>{{ movieToToggle.isEnabled ? 'inhabilitar' : 'habilitar' }}</strong> 
+        la película <strong>"{{ movieToToggle.title }}"</strong>?
+      </p>
+      <div class="confirmation-actions">
+        <button class="btn btn-secondary" (click)="cancelToggle()">
+          <i class="bi bi-x"></i>
+          Cancelar
+        </button>
+        <button class="btn btn-secondary" (click)="confirmToggle()">
+          <i class="bi bi-check"></i>
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="text-center py-5" *ngIf="loading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-3 text-muted">Cargando películas...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div class="alert alert-danger" *ngIf="errorMessage && !loading">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Movies Table -->
+  <div class="table-responsive" *ngIf="!loading && !errorMessage">
+    <table class="table table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Imagen</th>
+          <th>Título</th>
+          <th>Género</th>
+          <th>Duración</th>
+          <th>Precio</th>
+          <th>Estado</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let movie of movies">
+          <td>{{ movie.id }}</td>
+          <td>
+            <img [src]="movie.imageUrl" [alt]="movie.title" class="movie-thumbnail">
+          </td>
+          <td>
+            <strong>{{ movie.title }}</strong>
+          </td>
+          <td>{{ movie.genre }}</td>
+          <td>{{ movie.duration }} min</td>
+          <td>{{ movie.price | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          <td>
+            <span [class]="getStatusBadgeClass(movie.isEnabled)">
+              {{ getStatusText(movie.isEnabled) }}
+            </span>
+          </td>
+          <td class="text-center">
+            <div class="action-buttons">
+              <button 
+                class="btn btn-action btn-edit"
+                (click)="editMovie(movie.id)">
+                <i class="bi bi-pencil-square me-2"></i>
+                Editar
+              </button>
+              <button 
+                class="btn btn-action"
+                [class.btn-disable]="movie.isEnabled"
+                [class.btn-enable]="!movie.isEnabled"
+                (click)="prepareToggle(movie)">
+                <i [class]="movie.isEnabled ? 'bi bi-x-circle me-2' : 'bi bi-check-circle me-2'"></i>
+                {{ movie.isEnabled ? 'Inhabilitar' : 'Habilitar' }}
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- No Movies Message -->
+    <div class="text-center py-5" *ngIf="movies.length === 0">
+      <i class="bi bi-film fs-1 text-muted"></i>
+      <p class="text-muted mt-3">No hay películas registradas</p>
+      <button class="btn btn-primary mt-2" (click)="createMovie()">
+        <i class="bi bi-plus-circle me-2"></i>
+        Crear Primera Película
+      </button>
+    </div>
+  </div>
+</div>

@@ -5,6 +5,7 @@ import com.vortexbird.movieticket.dto.LoginDTO;
 import com.vortexbird.movieticket.dto.LoginResponseDTO;
 import com.vortexbird.movieticket.dto.RegisterCustomerDTO;
 import com.vortexbird.movieticket.model.Customer;
+import com.vortexbird.movieticket.model.Role;
 import com.vortexbird.movieticket.repository.ICustomerRepository;
 import com.vortexbird.movieticket.shared.exception.BusinessException;
 import com.vortexbird.movieticket.shared.exception.ResourceNotFoundException;
@@ -43,6 +44,7 @@ public class CustomerService implements ICustomerService {
         customer.setFirstName(dto.getFirstName());
         customer.setLastName(dto.getLastName());
         customer.setPassword(dto.getPassword());
+        customer.setRole(Role.CUSTOMER);
         
         Customer savedCustomer = customerRepository.save(customer);
         log.info("Customer registered successfully: {}", savedCustomer.getEmail());
@@ -76,7 +78,8 @@ public class CustomerService implements ICustomerService {
             customer.getId(),
             customer.getEmail(),
             customer.getFirstName(),
-            customer.getLastName()
+            customer.getLastName(),
+            customer.getRole().name()
         );
     }
 
@@ -115,6 +118,7 @@ public class CustomerService implements ICustomerService {
         dto.setPhone(customer.getPhone());
         dto.setFirstName(customer.getFirstName());
         dto.setLastName(customer.getLastName());
+        dto.setRole(customer.getRole().name());
         dto.setEnabled(customer.getIsEnabled());
         dto.setCreatedAt(customer.getCreatedAt());
         return dto;

@@ -18,5 +18,13 @@ export const routes: Routes = [
   {
     path: 'movies',
     loadChildren: () => import('@modules/movies/movies.routes').then(m => m.MOVIES_ROUTES)
+  },
+  {
+    path: 'auth/register',
+    loadComponent: () => import('@modules/auth/register/register.component').then(m => m.RegisterComponent)
+  },
+  {
+    path: 'auth/login',
+    loadComponent: () => import('@modules/auth/login/login.component').then(m => m.LoginComponent)
   }
 ];

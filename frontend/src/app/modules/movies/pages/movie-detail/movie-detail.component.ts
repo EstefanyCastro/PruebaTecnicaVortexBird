@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
     <div style="padding: 2rem; text-align: center;">
       <h2>Detalle de Película</h2>
       <p>Esta sección está en desarrollo</p>
-      <a routerLink="/movies/list" style="color: #667eea;">Volver a la lista</a>
+      <a routerLink="/home" style="color: #667eea;">Volver al inicio</a>
     </div>
   `
 })

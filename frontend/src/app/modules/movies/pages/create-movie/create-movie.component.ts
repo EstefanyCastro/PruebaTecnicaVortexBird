@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MovieService } from '@core/services/movie.service';
 import { CreateMovieRequest } from '@models/movie.model';
 
 /**
- * Component for creating new movies.
+ * Component for creating and editing movies.
  * Provides a form for entering movie details.
  */
 @Component({
@@ -16,16 +16,20 @@ import { CreateMovieRequest } from '@models/movie.model';
   templateUrl: './create-movie.component.html',
   styleUrls: ['./create-movie.component.css']
 })
-export class CreateMovieComponent {
+export class CreateMovieComponent implements OnInit {
   movieForm: FormGroup;
   loading = false;
   error: string | null = null;
   success: string | null = null;
+  isEditMode = false;
+  movieId: number | null = null;
+  pageTitle = 'Crear Película';
 
   constructor(
     private fb: FormBuilder,
     private movieService: MovieService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.movieForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(255)]],
@@ -37,9 +41,44 @@ export class CreateMovieComponent {
     });
   }
 
+  ngOnInit(): void {
+    // Verificar si estamos en modo edición
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.isEditMode = true;
+      this.movieId = parseInt(id);
+      this.pageTitle = 'Editar Película';
+      this.loadMovie(this.movieId);
+    }
+  }
+
   /**
-   * Handles form submission
+   * Carga los datos de la película para editar
    */
+  loadMovie(id: number): void {
+    this.loading = true;
+    this.movieService.getMovieById(id).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.movieForm.patchValue({
+            title: response.data.title,
+            description: response.data.description,
+            imageUrl: response.data.imageUrl,
+            genre: response.data.genre,
+            duration: response.data.duration,
+            price: response.data.price
+          });
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = 'Error al cargar la película';
+        console.error('Error loading movie:', err);
+      }
+    });
+  }
+
   onSubmit(): void {
     if (this.movieForm.invalid) {
       this.error = 'Por favor, complete todos los campos requeridos correctamente.';
@@ -59,35 +98,33 @@ export class CreateMovieComponent {
       price: parseFloat(this.movieForm.value.price)
     };
 
-    this.movieService.createMovie(movieData).subscribe({
+    const operation = this.isEditMode && this.movieId
+      ? this.movieService.updateMovie(this.movieId, movieData)
+      : this.movieService.createMovie(movieData);
+
+    operation.subscribe({
       next: (response) => {
         this.loading = false;
-        this.success = '¡Película creada exitosamente!';
+        this.success = this.isEditMode ? '¡Película actualizada exitosamente!' : '¡Película creada exitosamente!';
         setTimeout(() => {
-          this.router.navigate(['/movies/list']);
+          this.router.navigate(['/movies/manage']);
         }, 2000);
       },
       error: (err) => {
         this.loading = false;
-        this.error = err.error?.message || 'Error al crear la película. Por favor, intente nuevamente.';
-        console.error('Error creating movie:', err);
+        this.error = err.error?.message || `Error al ${this.isEditMode ? 'actualizar' : 'crear'} la película. Por favor, intente nuevamente.`;
+        console.error('Error with movie operation:', err);
       }
     });
   }
 
-  /**
-   * Resets the form
-   */
   resetForm(): void {
     this.movieForm.reset();
     this.error = null;
     this.success = null;
   }
 
-  /**
-   * Navigates back to movie list
-   */
   cancel(): void {
-    this.router.navigate(['/movies/list']);
+    this.router.navigate(['/movies/manage']);
   }
 }

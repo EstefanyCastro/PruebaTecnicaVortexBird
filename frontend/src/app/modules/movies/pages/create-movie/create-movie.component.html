@@ -1,24 +1,19 @@
 <div class="create-movie-container">
   <div class="create-movie-card">
     <div class="card-header">
-      <h1>Crear Nueva Película</h1>
-      <p>Complete el formulario para agregar una nueva película al sistema</p>
+      <h1>{{ pageTitle }}</h1>
+      <p>{{ isEditMode ? 'Modifique los datos de la película' : 'Complete el formulario para agregar una nueva película al sistema' }}</p>
     </div>
 
     <!-- Success Message -->
-    <div *ngIf="success" class="alert alert-success">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-      </svg>
+    <div *ngIf="success" class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle-fill me-2"></i>
       {{ success }}
     </div>
 
     <!-- Error Message -->
-    <div *ngIf="error" class="alert alert-error">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
-      </svg>
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
       {{ error }}
     </div>
 
@@ -104,7 +99,7 @@
             id="price"
             type="number"
             formControlName="price"
-            placeholder="Ej: 15.99"
+            placeholder="Ej: 15000"
             min="0"
             step="0.01"
             [class.invalid]="movieForm.get('price')?.invalid && movieForm.get('price')?.touched"
@@ -119,16 +114,14 @@
         <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
           Cancelar
         </button>
-        <button type="button" class="btn btn-outline" (click)="resetForm()" [disabled]="loading">
+        <button type="button" class="btn btn-secondary" (click)="resetForm()" [disabled]="loading">
           Limpiar
         </button>
         <button type="submit" class="btn btn-primary" [disabled]="loading || movieForm.invalid">
-          <span *ngIf="!loading">Crear Película</span>
+          <span *ngIf="!loading">{{ isEditMode ? 'Modificar Película' : 'Crear Película' }}</span>
           <span *ngIf="loading" class="loading-spinner">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-            </svg>
-            Creando...
+            <i class="bi bi-arrow-repeat spinner-icon"></i>
+            {{ isEditMode ? 'Modificando...' : 'Creando...' }}
           </span>
         </button>
       </div>

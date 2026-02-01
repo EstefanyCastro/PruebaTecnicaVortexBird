@@ -39,6 +39,10 @@ public class Customer {
     @Column(nullable = false)
     private String password;
     
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Role role = Role.CUSTOMER;
+    
     @Column(name = "is_enabled", nullable = false)
     private Boolean isEnabled = true;
     

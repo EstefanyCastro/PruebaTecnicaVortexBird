@@ -1,18 +1,26 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '@core/guards/auth.guard';
+import { adminGuard } from '@core/guards/admin.guard';
 
 /**
  * Movies module routes.
  * 
  * Contains routes for browsing, creating, and viewing movies.
+ * Admin routes are protected with adminGuard.
  */
 export const MOVIES_ROUTES: Routes = [
   {
-    path: 'list',
-    loadComponent: () => import('./pages/movie-list/movie-list.component').then(m => m.MovieListComponent)
+    path: 'manage',
+    canActivate: [adminGuard],
+    loadComponent: () => import('./pages/movie-manage/movie-manage.component').then(m => m.MovieManageComponent)
   },
   {
-    path: 'create',
+    path: 'manage/create',
+    canActivate: [adminGuard],
+    loadComponent: () => import('./pages/create-movie/create-movie.component').then(m => m.CreateMovieComponent)
+  },
+  {
+    path: 'manage/edit/:id',
+    canActivate: [adminGuard],
     loadComponent: () => import('./pages/create-movie/create-movie.component').then(m => m.CreateMovieComponent)
   },
   {
@@ -21,7 +29,7 @@ export const MOVIES_ROUTES: Routes = [
   },
   {
     path: '',
-    redirectTo: 'list',
+    redirectTo: 'manage',
     pathMatch: 'full'
   }
 ];

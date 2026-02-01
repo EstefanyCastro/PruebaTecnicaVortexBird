@@ -21,6 +21,7 @@ public class CustomerDTO {
     private String phone;
     private String firstName;
     private String lastName;
+    private String role;
     private Boolean enabled;
     private LocalDateTime createdAt;
 }

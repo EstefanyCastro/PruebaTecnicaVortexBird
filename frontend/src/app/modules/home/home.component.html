@@ -1,10 +1,9 @@
 <div class="home-container">
-  <!-- Sección de búsqueda y filtros -->
   <section class="search-section">
     <div class="container">
       <div class="row mb-4">
         <div class="col-12 text-center">
-          <h1 class="display-4 fw-bold mb-2">Movie Ticket Tefa System</h1>
+          <h1 class="display-4 fw-bold mb-2">Cinecolombia Pirata</h1>
           <p class="lead">Descubre y reserva las mejores películas en cartelera</p>
         </div>
       </div>
@@ -54,7 +53,6 @@
   <!-- Sección de películas -->
   <section class="movies-section">
     <div class="container">
-      <!-- Loading spinner -->
       <div *ngIf="loading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
           <span class="visually-hidden">Cargando...</span>
@@ -62,7 +60,6 @@
         <p class="mt-3 text-muted">Cargando películas...</p>
       </div>
 
-      <!-- Sin resultados -->
       <div *ngIf="!loading && movies.length === 0" class="no-movies">
         <i class="bi bi-film"></i>
         <h3>No se encontraron películas</h3>
@@ -86,7 +83,7 @@
               [src]="movie.imageUrl" 
               [alt]="movie.title"
               class="card-img-top"
-              onerror="this.src='https://via.placeholder.com/300x450?text=Sin+Imagen'">
+              onerror="this.src='assets/noImage.jpg'">
             <div class="card-body movie-card-body d-flex flex-column">
               <h5 class="movie-title">{{ movie.title }}</h5>
               <span class="movie-genre">{{ movie.genre }}</span>

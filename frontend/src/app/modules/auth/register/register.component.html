@@ -1,0 +1,163 @@
+<div class="register-container">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="register-card">
+          <div class="register-header text-center mb-4">
+            <div class="icon-circle mb-3">
+              <i class="bi bi-person-plus-fill"></i>
+            </div>
+            <h2 class="fw-bold">Crear Cuenta</h2>
+            <p class="text-muted">Regístrate para comenzar a reservar tus películas favoritas</p>
+          </div>
+
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {{ errorMessage }}
+            <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+          </div>
+
+          <!-- Form -->
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <!-- First Name & Last Name -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Nombre</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="firstName"
+                    placeholder="Tu nombre"
+                    [class.is-invalid]="registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid">
+                </div>
+                <small class="text-danger" *ngIf="registerForm.get('firstName')?.touched">
+                  {{ getErrorMessage('firstName') }}
+                </small>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Apellido</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="lastName"
+                    placeholder="Tu apellido"
+                    [class.is-invalid]="registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid">
+                </div>
+                <small class="text-danger" *ngIf="registerForm.get('lastName')?.touched">
+                  {{ getErrorMessage('lastName') }}
+                </small>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input 
+                  type="email" 
+                  class="form-control" 
+                  formControlName="email"
+                  placeholder="correo@ejemplo.com"
+                  [class.is-invalid]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+              </div>
+              <small class="text-danger" *ngIf="registerForm.get('email')?.touched">
+                {{ getErrorMessage('email') }}
+              </small>
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+              <label class="form-label">Teléfono</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                <input 
+                  type="tel" 
+                  class="form-control" 
+                  formControlName="phone"
+                  placeholder="3001234567"
+                  maxlength="10"
+                  [class.is-invalid]="registerForm.get('phone')?.touched && registerForm.get('phone')?.invalid">
+              </div>
+              <small class="text-danger" *ngIf="registerForm.get('phone')?.touched">
+                {{ getErrorMessage('phone') }}
+              </small>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <label class="form-label">Contraseña</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                <input 
+                  [type]="showPassword ? 'text' : 'password'" 
+                  class="form-control" 
+                  formControlName="password"
+                  placeholder="Mínimo 8 caracteres"
+                  [class.is-invalid]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
+                <button 
+                  class="btn btn-outline-secondary" 
+                  type="button"
+                  (click)="togglePassword()">
+                  <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                </button>
+              </div>
+              <small class="text-danger" *ngIf="registerForm.get('password')?.touched">
+                {{ getErrorMessage('password') }}
+              </small>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-3">
+              <label class="form-label">Confirmar Contraseña</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                <input 
+                  [type]="showPassword ? 'text' : 'password'" 
+                  class="form-control" 
+                  formControlName="confirmPassword"
+                  placeholder="Repite tu contraseña"
+                  [class.is-invalid]="registerForm.get('confirmPassword')?.touched && registerForm.errors?.['passwordMismatch']">
+              </div>
+              <small class="text-danger" *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.errors?.['passwordMismatch']">
+                Las contraseñas no coinciden
+              </small>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mb-3">
+              <button 
+                type="submit" 
+                class="btn btn-primary btn-lg"
+                [disabled]="loading">
+                <span *ngIf="!loading">
+                  <i class="bi bi-person-check me-2"></i>
+                  Registrarse
+                </span>
+                <span *ngIf="loading">
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Registrando...
+                </span>
+              </button>
+            </div>
+
+            <!-- Login Link -->
+            <div class="text-center">
+              <p class="text-muted mb-0">
+                ¿Ya tienes cuenta? 
+                <a routerLink="/auth/login" class="text-primary fw-bold text-decoration-none">
+                  Inicia Sesión
+                </a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
