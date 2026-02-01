@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { LoginRequest } from '@models/customer.model';
 
@@ -17,16 +17,21 @@ export class LoginComponent implements OnInit {
   loading = false;
   errorMessage = '';
   showPassword = false;
+  returnUrl: string = '/home';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    // Capturar returnUrl de los query params
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
+
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/home']);
+      this.router.navigate([this.returnUrl]);
       return;
     }
 
@@ -61,9 +66,13 @@ export class LoginComponent implements OnInit {
         if (response.success && response.data) {
           this.loading = false;
           
-          // Redirigir según el rol
-          if (response.data.role === 'ADMIN') {
-            this.router.navigate(['/home']);
+          // Redirigir a returnUrl o home según el rol
+          if (response.data.role === 'ADMIN' && this.returnUrl !== '/home') {
+            // Admin puede ir a la URL solicitada solo si no es home por defecto
+            this.router.navigateByUrl(this.returnUrl);
+          } else if (response.data.role === 'CUSTOMER') {
+            // Customer siempre usa returnUrl
+            this.router.navigateByUrl(this.returnUrl);
           } else {
             this.router.navigate(['/home']);
           }

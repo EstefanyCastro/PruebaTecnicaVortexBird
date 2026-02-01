@@ -1,0 +1,238 @@
+<div class="manage-container">
+  <div class="manage-header">
+    <div class="header-left">
+      <button class="btn btn-secondary me-3" (click)="goBack()">
+        <i class="bi bi-arrow-left me-2"></i>
+        Volver
+      </button>
+      <h1>
+        <i class="bi bi-receipt me-2"></i>
+        Gestión de compras
+      </h1>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="row mb-4" *ngIf="!loading">
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon bg-primary">
+          <i class="bi bi-receipt-cutoff"></i>
+        </div>
+        <div class="stat-details">
+          <h3>{{ filteredPurchases.length }}</h3>
+          <p>Total Compras</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon bg-success">
+          <i class="bi bi-ticket-perforated"></i>
+        </div>
+        <div class="stat-details">
+          <h3>{{ getTotalTickets() }}</h3>
+          <p>Entradas Vendidas</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon bg-warning">
+          <i class="bi bi-cash-stack"></i>
+        </div>
+        <div class="stat-details">
+          <h3>{{ getTotalRevenue() | currency:'COP':'symbol-narrow':'1.0-0' }}</h3>
+          <p>Ingresos Totales</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section mb-4" *ngIf="!loading">
+    <div class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Buscar</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Cliente, correo, película..."
+          [(ngModel)]="searchTerm"
+          (input)="applyFilters()">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Película</label>
+        <select 
+          class="form-select" 
+          [(ngModel)]="selectedMovieId"
+          (change)="applyFilters()">
+          <option [value]="null">Todas las películas</option>
+          <option *ngFor="let movie of movies" [value]="movie.id">
+            {{ movie.title }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Cliente</label>
+        <select 
+          class="form-select" 
+          [(ngModel)]="selectedCustomerId"
+          (change)="applyFilters()">
+          <option [value]="null">Todos los clientes</option>
+          <option *ngFor="let customer of customers" [value]="customer.id">
+            {{ customer.firstName }} {{ customer.lastName }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Estado</label>
+        <select 
+          class="form-select" 
+          [(ngModel)]="selectedStatus"
+          (change)="applyFilters()">
+          <option value="">Todos</option>
+          <option value="CONFIRMED">Confirmada</option>
+          <option value="PENDING">Pendiente</option>
+          <option value="CANCELLED">Cancelada</option>
+          <option value="REFUNDED">Reembolsada</option>
+        </select>
+      </div>
+      <div class="col-md-1 d-flex align-items-end">
+        <button 
+          class="btn btn-outline-secondary w-100" 
+          (click)="clearFilters()"
+          title="Limpiar filtros">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="text-center py-5" *ngIf="loading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-3 text-muted">Cargando compras...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div class="alert alert-danger" *ngIf="errorMessage && !loading">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Desktop Table View -->
+  <div class="desktop-view" *ngIf="!loading && !errorMessage">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Código</th>
+            <th>Cliente</th>
+            <th>Película</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Tarjeta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let purchase of filteredPurchases">
+            <td>
+              <span class="badge bg-primary">{{ purchase.confirmationCode }}</span>
+            </td>
+            <td>
+              <strong>{{ purchase.customerName }}</strong><br>
+              <small class="text-muted">{{ purchase.customerEmail }}</small>
+            </td>
+            <td>{{ purchase.movieTitle }}</td>
+            <td>
+              <span class="badge bg-info">{{ purchase.quantity }} entrada(s)</span>
+            </td>
+            <td>
+              <strong>{{ purchase.totalAmount | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+            </td>
+            <td>
+              <span [class]="getStatusBadgeClass(purchase.status)">
+                {{ getStatusText(purchase.status) }}
+              </span>
+            </td>
+            <td>
+              <small>{{ formatDate(purchase.purchaseDate) }}</small>
+            </td>
+            <td>
+              <small class="text-muted">
+                **** {{ purchase.cardLastFour }}<br>
+                {{ purchase.cardHolderName }}
+              </small>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- No Purchases Message -->
+      <div class="text-center py-5" *ngIf="filteredPurchases.length === 0">
+        <i class="bi bi-receipt fs-1 text-muted"></i>
+        <p class="text-muted mt-3">No se encontraron compras</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Card View -->
+  <div class="mobile-view" *ngIf="!loading && !errorMessage">
+    <div class="purchase-card" *ngFor="let purchase of filteredPurchases">
+      <div class="purchase-card-header">
+        <span class="badge bg-primary">{{ purchase.confirmationCode }}</span>
+        <span [class]="getStatusBadgeClass(purchase.status)">
+          {{ getStatusText(purchase.status) }}
+        </span>
+      </div>
+      <div class="purchase-card-body">
+        <div class="info-row">
+          <span class="info-label">Cliente:</span>
+          <span class="info-value">
+            <strong>{{ purchase.customerName }}</strong><br>
+            <small class="text-muted">{{ purchase.customerEmail }}</small>
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Película:</span>
+          <span class="info-value">{{ purchase.movieTitle }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Cantidad:</span>
+          <span class="info-value">
+            <span class="badge bg-info">{{ purchase.quantity }} entrada(s)</span>
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Total:</span>
+          <span class="info-value">
+            <strong class="text-success">{{ purchase.totalAmount | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Fecha:</span>
+          <span class="info-value">
+            <small>{{ formatDate(purchase.purchaseDate) }}</small>
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Tarjeta:</span>
+          <span class="info-value">
+            <small class="text-muted">**** {{ purchase.cardLastFour }} - {{ purchase.cardHolderName }}</small>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Purchases Message -->
+    <div class="text-center py-5" *ngIf="filteredPurchases.length === 0">
+      <i class="bi bi-receipt fs-1 text-muted"></i>
+      <p class="text-muted mt-3">No se encontraron compras</p>
+    </div>
+  </div>
+</div>

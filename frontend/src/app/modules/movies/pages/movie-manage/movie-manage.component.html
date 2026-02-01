@@ -73,7 +73,7 @@
         <tr *ngFor="let movie of movies">
           <td>{{ movie.id }}</td>
           <td>
-            <img [src]="movie.imageUrl" [alt]="movie.title" class="movie-thumbnail">
+            <img [src]="movie.imageUrl" [alt]="movie.title" class="movie-thumbnail" onerror="this.src='assets/noImage.jpg'">
           </td>
           <td>
             <strong>{{ movie.title }}</strong>

@@ -53,8 +53,10 @@ export class MovieDetailComponent implements OnInit {
 
   handlePurchase(): void {
     if (!this.authService.isLoggedIn()) {
-      // Si no está logueado, redirigir a login
-      this.router.navigate(['/auth/login']);
+      // Si no está logueado, redirigir a login con returnUrl
+      this.router.navigate(['/auth/login'], {
+        queryParams: { returnUrl: `/purchase/${this.movie?.id}` }
+      });
     } else {
       // Si está logueado, ir a página de compra con el ID de la película
       this.router.navigate(['/purchase', this.movie?.id]);
