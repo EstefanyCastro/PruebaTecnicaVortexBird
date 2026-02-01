@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient fixed-top shadow-sm">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand fw-bold d-flex align-items-center" routerLink="/home">
+      <i class="bi bi-film me-2 fs-4"></i>
+      <span class="brand-name">Movie Ticket</span>
+    </a>
+    
+    <button 
+      class="navbar-toggler" 
+      type="button" 
+      data-bs-toggle="collapse" 
+      data-bs-target="#navbarNav" 
+      aria-controls="navbarNav" 
+      aria-expanded="false" 
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item me-2">
+          <a class="nav-link" routerLink="/home" routerLinkActive="active">
+            <i class="bi bi-house-door me-1"></i>
+            Inicio
+          </a>
+        </li>
+        <li class="nav-item me-2">
+          <a class="nav-link" routerLink="/movies/list" routerLinkActive="active">
+            <i class="bi bi-collection-play me-1"></i>
+            Películas
+          </a>
+        </li>
+        <li class="nav-item me-2">
+          <a class="nav-link" routerLink="/movies/create" routerLinkActive="active">
+            <i class="bi bi-plus-circle me-1"></i>
+            Crear Película
+          </a>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-login btn-sm px-4" (click)="login()">
+            <i class="bi bi-box-arrow-in-right me-1"></i>
+            Iniciar Sesión
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+

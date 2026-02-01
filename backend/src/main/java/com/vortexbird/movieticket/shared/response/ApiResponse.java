@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Standard API Response wrapper.
- * 
+ *
  * Wraps all API responses with success/error status and additional metadata.
  */
 @Data
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ApiResponse<T> {
-    
+
     private boolean success;
     private String message;
     private T data;

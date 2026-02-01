@@ -1,0 +1,106 @@
+<div class="home-container">
+  <!-- Sección de búsqueda y filtros -->
+  <section class="search-section">
+    <div class="container">
+      <div class="row mb-4">
+        <div class="col-12 text-center">
+          <h1 class="display-4 fw-bold mb-2">Movie Ticket Tefa System</h1>
+          <p class="lead">Descubre y reserva las mejores películas en cartelera</p>
+        </div>
+      </div>
+
+      <!-- Barra de búsqueda -->
+      <div class="row justify-content-center mb-4">
+        <div class="col-lg-8">
+          <div class="input-group input-group-lg">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control border-start-0 ps-0"
+              placeholder="Buscar películas por nombre..."
+              [(ngModel)]="searchTerm"
+              (input)="filterMovies()"
+            />
+            <button 
+              *ngIf="searchTerm || selectedGenre" 
+              class="btn btn-outline-secondary"
+              type="button"
+              (click)="clearFilters()">
+              <i class="bi bi-x-lg"></i> Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros por género -->
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex flex-wrap justify-content-center gap-2">
+            <button
+              *ngFor="let genre of genres"
+              class="btn filter-btn"
+              [class.active]="selectedGenre === genre"
+              (click)="selectGenre(genre)">
+              {{ genre }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección de películas -->
+  <section class="movies-section">
+    <div class="container">
+      <!-- Loading spinner -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-3 text-muted">Cargando películas...</p>
+      </div>
+
+      <!-- Sin resultados -->
+      <div *ngIf="!loading && movies.length === 0" class="no-movies">
+        <i class="bi bi-film"></i>
+        <h3>No se encontraron películas</h3>
+        <p>Intenta con otros criterios de búsqueda</p>
+      </div>
+
+      <!-- Grid de películas -->
+      <div *ngIf="!loading && movies.length > 0" class="row g-4">
+        <div class="col-12 mb-3">
+          <h2 class="h4 text-muted">
+            {{ movies.length }} 
+            {{ movies.length === 1 ? 'película encontrada' : 'películas encontradas' }}
+          </h2>
+        </div>
+
+        <div 
+          *ngFor="let movie of movies" 
+          class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="card movie-card shadow-sm h-100">
+            <img 
+              [src]="movie.imageUrl" 
+              [alt]="movie.title"
+              class="card-img-top"
+              onerror="this.src='https://via.placeholder.com/300x450?text=Sin+Imagen'">
+            <div class="card-body movie-card-body d-flex flex-column">
+              <h5 class="movie-title">{{ movie.title }}</h5>
+              <span class="movie-genre">{{ movie.genre }}</span>
+              <p class="movie-description flex-grow-1">{{ movie.description }}</p>
+              <div class="movie-info">
+                <span class="movie-duration">
+                  <i class="bi bi-clock"></i> {{ movie.duration }} min
+                </span>
+                <span class="movie-price">${{ movie.price | number:'1.0-0' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

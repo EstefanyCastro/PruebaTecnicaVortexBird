@@ -1,0 +1,137 @@
+<div class="create-movie-container">
+  <div class="create-movie-card">
+    <div class="card-header">
+      <h1>Crear Nueva Película</h1>
+      <p>Complete el formulario para agregar una nueva película al sistema</p>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="success" class="alert alert-success">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+      </svg>
+      {{ success }}
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="alert alert-error">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+      </svg>
+      {{ error }}
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="movieForm" (ngSubmit)="onSubmit()" class="movie-form">
+      <div class="form-group full-width">
+        <label for="title">Título *</label>
+        <input
+          id="title"
+          type="text"
+          formControlName="title"
+          placeholder="Ej: Inception"
+          [class.invalid]="movieForm.get('title')?.invalid && movieForm.get('title')?.touched"
+        />
+        <span class="error-message" *ngIf="movieForm.get('title')?.invalid && movieForm.get('title')?.touched">
+          El título es requerido (máx. 255 caracteres)
+        </span>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="description">Descripción *</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          placeholder="Descripción completa de la película"
+          rows="4"
+          [class.invalid]="movieForm.get('description')?.invalid && movieForm.get('description')?.touched"
+        ></textarea>
+        <span class="error-message" *ngIf="movieForm.get('description')?.invalid && movieForm.get('description')?.touched">
+          La descripción es requerida (mínimo 10 caracteres)
+        </span>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="imageUrl">URL de la Imagen *</label>
+        <input
+          id="imageUrl"
+          type="url"
+          formControlName="imageUrl"
+          placeholder="https://ejemplo.com/imagen.jpg"
+          [class.invalid]="movieForm.get('imageUrl')?.invalid && movieForm.get('imageUrl')?.touched"
+        />
+        <span class="error-message" *ngIf="movieForm.get('imageUrl')?.invalid && movieForm.get('imageUrl')?.touched">
+          La URL de la imagen es requerida
+        </span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="genre">Género *</label>
+          <input
+            id="genre"
+            type="text"
+            formControlName="genre"
+            placeholder="Ej: Ciencia Ficción"
+            [class.invalid]="movieForm.get('genre')?.invalid && movieForm.get('genre')?.touched"
+          />
+          <span class="error-message" *ngIf="movieForm.get('genre')?.invalid && movieForm.get('genre')?.touched">
+            El género es requerido (máx. 100 caracteres)
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="duration">Duración (minutos) *</label>
+          <input
+            id="duration"
+            type="number"
+            formControlName="duration"
+            placeholder="Ej: 148"
+            min="1"
+            [class.invalid]="movieForm.get('duration')?.invalid && movieForm.get('duration')?.touched"
+          />
+          <span class="error-message" *ngIf="movieForm.get('duration')?.invalid && movieForm.get('duration')?.touched">
+            La duración debe ser mayor a 0
+          </span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="price">Precio *</label>
+          <input
+            id="price"
+            type="number"
+            formControlName="price"
+            placeholder="Ej: 15.99"
+            min="0"
+            step="0.01"
+            [class.invalid]="movieForm.get('price')?.invalid && movieForm.get('price')?.touched"
+          />
+          <span class="error-message" *ngIf="movieForm.get('price')?.invalid && movieForm.get('price')?.touched">
+            El precio debe ser mayor o igual a 0
+          </span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-outline" (click)="resetForm()" [disabled]="loading">
+          Limpiar
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading || movieForm.invalid">
+          <span *ngIf="!loading">Crear Película</span>
+          <span *ngIf="loading" class="loading-spinner">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+            </svg>
+            Creando...
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

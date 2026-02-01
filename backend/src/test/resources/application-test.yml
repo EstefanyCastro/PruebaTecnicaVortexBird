@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  
+  h2:
+    console:
+      enabled: false
+
+# JWT Configuration
+jwt:
+  secret: testsecretkeytestsecretkeytestsecretkeytestsecretkeytestsecretkeytestsecretkey
+  expiration: 86400000
+
+# Mail Configuration (disabled for tests)
+spring.mail:
+  host: localhost
+  port: 1025
+  username: test
+  password: test
+  properties:
+    mail:
+      smtp:
+        auth: false
+        starttls:
+          enable: false
+
+logging:
+  level:
+    com.vortexbird: INFO
+    org.hibernate: ERROR
+    org.springframework: ERROR

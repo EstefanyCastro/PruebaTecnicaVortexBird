@@ -3,45 +3,22 @@ spring:
     name: movie-ticket-api
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
     properties:
       hibernate:
         format_sql: true
         use_sql_comments: true
     show-sql: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/movie_ticket_db
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/movie_ticket_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
-  mail:
-    host: ${MAIL_HOST:smtp.gmail.com}
-    port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
 
 server:
   servlet:
     context-path: /api
   port: 8080
-
-jwt:
-  secret: ${JWT_SECRET:your-secret-key-change-in-production}
-  expiration: 86400000 # 24 hours
-
-aws:
-  s3:
-    bucket: ${AWS_S3_BUCKET:movie-tickets-bucket}
-    region: ${AWS_REGION:us-east-1}
-    access-key: ${AWS_ACCESS_KEY}
-    secret-key: ${AWS_SECRET_KEY}
 
 logging:
   level:

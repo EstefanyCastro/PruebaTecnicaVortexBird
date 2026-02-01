@@ -44,4 +44,11 @@ public class Movie {
     @Column(name = "is_enabled")
     private Boolean isEnabled;
 
+    @PrePersist
+    protected void onCreate() {
+        if (isEnabled == null) {
+            isEnabled = true;
+        }
+
+    }
 }

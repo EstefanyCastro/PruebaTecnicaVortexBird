@@ -15,17 +15,15 @@ import java.util.Optional;
  */
 @Repository
 public interface IMovieRepository extends JpaRepository<Movie, Long> {
+    
+    Optional<Movie> findByIdAndIsEnabledTrue(Long id);
+
+    @Query("SELECT m FROM Movie m WHERE m.isEnabled = true")
+    List<Movie> findAllEnabled();
+    
+    @Query("SELECT m FROM Movie m WHERE LOWER(m.title) LIKE LOWER(CONCAT('%', :name, '%')) AND m.isEnabled = true")
+    List<Movie> findByTitle(@Param("name") String title);
+
+    @Query("SELECT m FROM Movie m WHERE LOWER(m.genre) = LOWER(:genre) AND m.isEnabled = true")
+    List<Movie> findByGenre(@Param("genre") String genre);
 }
-
-
-//     Optional<Movie> findByIdAndIsEnabledTrue(Long id);
-
-//     @Query("SELECT m FROM Movie m WHERE m.isEnabled = true")
-//     List<Movie> findAllEnabled();
-
-//     @Query("SELECT m FROM Movie m WHERE LOWER(m.title) LIKE LOWER(CONCAT('%', :name, '%')) AND m.isEnabled = true")
-//     List<Movie> findByTitle(@Param("name") String title);
-
-//     @Query("SELECT m FROM Movie m WHERE LOWER(m.genre) = LOWER(:genre) AND m.isEnabled = true")
-//     List<Movie> findByGenre(@Param("genre") String genre);
-
