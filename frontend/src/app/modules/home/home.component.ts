@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MovieService } from '@core/services/movie.service';
 import { Movie } from '@models/movie.model';
 
@@ -23,7 +24,10 @@ export class HomeComponent implements OnInit {
   genres: string[] = [];
   loading: boolean = false;
 
-  constructor(private movieService: MovieService) {}
+  constructor(
+    private movieService: MovieService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadMovies();
@@ -80,5 +84,9 @@ export class HomeComponent implements OnInit {
     this.searchTerm = '';
     this.selectedGenre = '';
     this.loadMovies();
+  }
+
+  navigateToDetail(movieId: number): void {
+    this.router.navigate(['/movies', movieId]);
   }
 }

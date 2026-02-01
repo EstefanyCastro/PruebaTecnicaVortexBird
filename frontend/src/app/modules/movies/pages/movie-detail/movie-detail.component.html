@@ -1,0 +1,81 @@
+<div class="movie-detail-container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !loading" class="alert alert-danger" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Movie Detail Content -->
+  <div *ngIf="movie && !loading" class="movie-detail">
+    <!-- Header with Back Button -->
+    <div class="detail-header">
+      <button class="btn btn-secondary" (click)="goBack()">
+        <i class="bi bi-arrow-left me-2"></i>
+        Volver
+      </button>
+    </div>
+
+    <!-- Movie Card -->
+    <div class="movie-card">
+      <div class="row g-4">
+        <!-- Movie Poster -->
+        <div class="col-lg-4">
+          <div class="poster-container">
+            <img 
+              [src]="movie.imageUrl" 
+              [alt]="movie.title"
+              class="movie-poster"
+              onerror="this.src='assets/noImage.jpg'">
+          </div>
+        </div>
+
+        <!-- Movie Information -->
+        <div class="col-lg-8">
+          <div class="movie-info">
+            <h1 class="movie-title">{{ movie.title }}</h1>
+            
+            <div class="movie-meta">
+              <span class="meta-item">
+                <i class="bi bi-clock me-1"></i>
+                {{ movie.duration }} min
+              </span>
+              <span class="meta-item">
+                <i class="bi bi-tag-fill me-1"></i>
+                {{ movie.genre }}
+              </span>
+            </div>
+
+            <div class="movie-description">
+              <h5>Sinopsis</h5>
+              <p>{{ movie.description }}</p>
+            </div>
+
+            <div class="movie-price">
+              <span class="price-label">Precio:</span>
+              <span class="price-value">${{ movie.price }}</span>
+            </div>
+
+            <!-- Purchase Button -->
+            <div class="purchase-section">
+              <button 
+                class="btn btn-purchase btn-lg"
+                (click)="handlePurchase()"
+              >
+                <i class="bi bi-ticket-perforated me-2"></i>
+                <span *ngIf="!isLoggedIn()">Comprar</span>
+                <span *ngIf="isLoggedIn()">Comprar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

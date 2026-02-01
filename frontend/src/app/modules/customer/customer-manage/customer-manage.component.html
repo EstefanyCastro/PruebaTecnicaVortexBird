@@ -1,0 +1,107 @@
+<div class="manage-container">
+  <div class="manage-header">
+    <div class="header-left">
+      <button class="btn btn-secondary me-3" (click)="goBack()">
+        <i class="bi bi-arrow-left me-2"></i>
+        Volver
+      </button>
+      <h1>
+        <i class="bi bi-people me-2"></i>
+        Gestión de Clientes
+      </h1>
+    </div>
+  </div>
+
+  <!-- Confirmation Panel -->
+  <div class="confirmation-panel" *ngIf="showConfirmation && customerToToggle">
+    <div class="confirmation-content">
+      <div class="confirmation-icon">
+        <i class="bi bi-exclamation-triangle"></i>
+      </div>
+      <h3>Confirmar Acción</h3>
+      <p>
+        ¿Estás seguro de <strong>{{ customerToToggle.enabled ? 'inhabilitar' : 'habilitar' }}</strong> 
+        la cuenta de <strong>"{{ customerToToggle.firstName }} {{ customerToToggle.lastName }}"</strong>?
+      </p>
+      <div class="confirmation-actions">
+        <button class="btn btn-secondary" (click)="cancelToggle()">
+          <i class="bi bi-x"></i>
+          Cancelar
+        </button>
+        <button class="btn btn-secondary" (click)="confirmToggle()">
+          <i class="bi bi-check"></i>
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="text-center py-5" *ngIf="loading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-3 text-muted">Cargando clientes...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div class="alert alert-danger" *ngIf="errorMessage && !loading">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Customers Table (Desktop) -->
+  <div class="table-responsive desktop-view" *ngIf="!loading && !errorMessage">
+    <table class="table table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Fecha Registro</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let customer of customers">
+          <td>{{ customer.id }}</td>
+          <td>
+            <strong>{{ customer.firstName }} {{ customer.lastName }}</strong>
+          </td>
+          <td>{{ customer.email }}</td>
+          <td>{{ customer.phone }}</td>
+          <td>
+            <span [class]="getRoleBadgeClass(customer.role)">
+              {{ customer.role }}
+            </span>
+          </td>
+          <td>
+            <span [class]="getStatusBadgeClass(customer.enabled)">
+              {{ getStatusText(customer.enabled) }}
+            </span>
+          </td>
+          <td>{{ formatDate(customer.createdAt) }}</td>
+          <td class="text-center">
+            <button 
+              class="btn btn-action"
+              [class.btn-disable]="customer.enabled"
+              [class.btn-enable]="!customer.enabled"
+              (click)="prepareToggle(customer)">
+              <i [class]="customer.enabled ? 'bi bi-x-circle me-2' : 'bi bi-check-circle me-2'"></i>
+              {{ customer.enabled ? 'Inhabilitar' : 'Habilitar' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- No Customers Message -->
+    <div class="text-center py-5" *ngIf="customers.length === 0">
+      <i class="bi bi-people fs-1 text-muted"></i>
+      <p class="text-muted mt-3">No hay clientes registrados</p>
+    </div>
+  </div>
+</div>

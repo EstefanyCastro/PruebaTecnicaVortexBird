@@ -49,6 +49,12 @@
 
         <!-- Opciones para NO autenticados -->
         <ng-container *ngIf="!isLoggedIn()">
+          <li class="nav-item me-2">
+            <button class="btn btn-login btn-sm px-4" (click)="register(); closeMenu()">
+              <i class="bi bi-person-plus me-1"></i>
+              Registrarse
+            </button>
+          </li>
           <li class="nav-item">
             <button class="btn btn-login btn-sm px-4" (click)="login(); closeMenu()">
               <i class="bi bi-box-arrow-in-right me-1"></i>
