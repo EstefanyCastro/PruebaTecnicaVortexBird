@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: movie-ticket-db
+    container_name: vortexbird-movie-db
     environment:
       POSTGRES_DB: movie_ticket_db
       POSTGRES_USER: postgres
@@ -23,7 +23,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: movie-ticket-api
+    container_name: vortexbird-movie-api
     ports:
       - "8080:8080"
     environment:
@@ -31,7 +31,10 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      JWT_SECRET: my-super-secret-key-for-jwt-token-generation-must-be-at-least-256-bits
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
     depends_on:
       postgres:
         condition: service_healthy
@@ -44,17 +47,17 @@ services:
       retries: 3
       start_period: 160s
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   container_name: movie-ticket-frontend
-  #   ports:
-  #     - "4200:80"
-  #   depends_on:
-  #     - backend
-  #   networks:
-  #     - movie-network
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vortexbird-movie-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - movie-network
 
 networks:
   movie-network:

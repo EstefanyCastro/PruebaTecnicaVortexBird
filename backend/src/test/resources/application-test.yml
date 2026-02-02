@@ -18,11 +18,6 @@ spring:
     console:
       enabled: false
 
-# JWT Configuration
-jwt:
-  secret: testsecretkeytestsecretkeytestsecretkeytestsecretkeytestsecretkeytestsecretkey
-  expiration: 86400000
-
 # Mail Configuration (disabled for tests)
 spring.mail:
   host: localhost

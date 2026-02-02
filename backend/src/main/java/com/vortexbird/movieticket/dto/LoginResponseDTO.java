@@ -7,14 +7,13 @@ import lombok.NoArgsConstructor;
 /**
  * DTO for login response.
  *
- * Contains JWT token and basic customer information after successful authentication.
+ * Contains basic customer information after successful authentication.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginResponseDTO {
     
-    private String token;
     private Long customerId;
     private String email;
     private String firstName;

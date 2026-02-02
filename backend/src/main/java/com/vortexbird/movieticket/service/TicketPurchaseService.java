@@ -32,6 +32,7 @@ public class TicketPurchaseService implements ITicketPurchaseService {
     private final ITicketPurchaseRepository purchaseRepository;
     private final ICustomerService customerService;
     private final IMovieService movieService;
+    private final IEmailService emailService;
 
     @Override
     public TicketPurchase createPurchase(Long customerId, CreateTicketPurchaseDTO dto) {
@@ -63,6 +64,11 @@ public class TicketPurchaseService implements ITicketPurchaseService {
         
         TicketPurchase savedPurchase = purchaseRepository.save(purchase);
         log.info("Purchase created successfully with confirmation code: {}", savedPurchase.getConfirmationCode());
+        
+        // Send confirmation email asynchronously
+        log.info("Attempting to send confirmation email to: {}", savedPurchase.getCustomer().getEmail());
+        emailService.sendPurchaseConfirmation(savedPurchase);
+        log.info("Email service called for confirmation code: {}", savedPurchase.getConfirmationCode());
         
         return savedPurchase;
     }

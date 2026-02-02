@@ -74,7 +74,6 @@ public class CustomerService implements ICustomerService {
         log.info("Login successful for customer: {}", customer.getEmail());
         
         return new LoginResponseDTO(
-            null,
             customer.getId(),
             customer.getEmail(),
             customer.getFirstName(),

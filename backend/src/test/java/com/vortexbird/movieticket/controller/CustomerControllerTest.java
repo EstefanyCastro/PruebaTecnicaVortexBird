@@ -94,7 +94,6 @@ class CustomerControllerTest {
         customerDTO.setEnabled(true);
 
         loginResponseDTO = new LoginResponseDTO(
-            null,
             1L,
             "test@example.com",
             "John",
