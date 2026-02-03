@@ -62,4 +62,11 @@ public class TicketPurchaseController {
         List<TicketPurchaseDTO> purchases = purchaseService.getMoviePurchases(movieId);
         return ResponseEntity.ok(ApiResponse.success(purchases, "Movie purchases retrieved successfully"));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> cancelPurchase(@PathVariable Long id) {
+        log.info("DELETE /purchases/{} - Cancelling purchase", id);
+        purchaseService.cancelPurchase(id);
+        return ResponseEntity.ok(ApiResponse.success(null, "Purchase cancelled successfully"));
+    }
 }

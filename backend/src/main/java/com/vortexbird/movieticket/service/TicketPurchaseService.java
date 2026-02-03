@@ -7,6 +7,7 @@ import com.vortexbird.movieticket.model.Movie;
 import com.vortexbird.movieticket.model.PurchaseStatus;
 import com.vortexbird.movieticket.model.TicketPurchase;
 import com.vortexbird.movieticket.repository.ITicketPurchaseRepository;
+import com.vortexbird.movieticket.shared.exception.BusinessException;
 import com.vortexbird.movieticket.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -99,6 +100,21 @@ public class TicketPurchaseService implements ITicketPurchaseService {
             .stream()
             .map(this::toDTO)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void cancelPurchase(Long id) {
+        log.info("Cancelling purchase with id: {}", id);
+        TicketPurchase purchase = getPurchaseById(id);
+        
+        if (purchase.getStatus() != PurchaseStatus.CONFIRMED) {
+            throw new BusinessException("Only confirmed purchases can be cancelled");
+        }
+        
+        purchase.setStatus(PurchaseStatus.CANCELLED);
+        purchaseRepository.save(purchase);
+        log.info("Purchase cancelled successfully: {}", id);
     }
 
     @Override

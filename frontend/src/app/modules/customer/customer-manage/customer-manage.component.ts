@@ -17,6 +17,12 @@ export class CustomerManageComponent implements OnInit {
   errorMessage = '';
   customerToToggle: Customer | null = null;
   showConfirmation = false;
+  
+  // Pagination
+  currentPage = 1;
+  itemsPerPage = 10;
+  totalPages = 1;
+  Math = Math;
 
   constructor(
     private customerService: CustomerService,
@@ -35,6 +41,7 @@ export class CustomerManageComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.customers = response.data;
+          this.updateTotalPages();
           this.loading = false;
         }
       },
@@ -98,5 +105,38 @@ export class CustomerManageComponent implements OnInit {
       month: 'short', 
       day: 'numeric' 
     });
+  }
+
+  // Pagination methods
+  get paginatedCustomers(): Customer[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.customers.slice(startIndex, endIndex);
+  }
+
+  updateTotalPages(): void {
+    this.totalPages = Math.ceil(this.customers.length / this.itemsPerPage);
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 }

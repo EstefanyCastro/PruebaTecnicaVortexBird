@@ -63,7 +63,7 @@ INSERT INTO movies (title, description, image_url, duration_minutes, genre, pric
 -- Insert sample customers (password: Test1234 - plain text for development)
 INSERT INTO customers (email, phone, first_name, last_name, password, role, is_enabled, created_at) VALUES
 ('admin@movieticket.com', '3001234567', 'Admin', 'Sistema', 'Admin1234', 'ADMIN', true, CURRENT_TIMESTAMP),
-('cliente@example.com', '3009876543', 'Cliente', 'Demo', 'Cliente1234', 'CUSTOMER', true, CURRENT_TIMESTAMP);
+('cliente@example.com', '3009876543', 'Cliente', 'Demo', 'Cliente1234', 'CUSTOMER', true, CURRENT_TIMESTAMP),
 ('maria.garcia@email.com', '3101234567', 'María', 'García', 'Maria1234', 'CUSTOMER', true, CURRENT_TIMESTAMP),
 ('carlos.lopez@email.com', '3202345678', 'Carlos', 'López', 'Carlos1234', 'CUSTOMER', true, CURRENT_TIMESTAMP),
 ('ana.martinez@email.com', '3303456789', 'Ana', 'Martínez', 'Ana1234', 'CUSTOMER', true, CURRENT_TIMESTAMP);

@@ -39,6 +39,16 @@
           </li>
         </ng-container>
 
+        <!-- Opciones para CUSTOMER -->
+        <ng-container *ngIf="isLoggedIn() && !isAdmin()">
+          <li class="nav-item me-2">
+            <a class="nav-link" routerLink="/customer/purchases" routerLinkActive="active" (click)="closeMenu()">
+              <i class="bi bi-bag-check me-1"></i>
+              Mis Compras
+            </a>
+          </li>
+        </ng-container>
+
         <!-- Mensaje de bienvenida para usuarios autenticados -->
         <li class="nav-item me-3" *ngIf="isLoggedIn()">
           <span class="navbar-text text-white">

@@ -21,5 +21,7 @@ public interface ITicketPurchaseService {
 
     List<TicketPurchaseDTO> getMoviePurchases(Long movieId);
 
+    void cancelPurchase(Long id);
+
     TicketPurchaseDTO toDTO(TicketPurchase purchase);
 }

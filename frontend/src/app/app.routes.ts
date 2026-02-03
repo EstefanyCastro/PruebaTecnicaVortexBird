@@ -14,7 +14,7 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    loadComponent: () => import('@modules/info-home/info-home.component').then(m => m.InfoHomeComponent)
+    loadComponent: () => import('@modules/home/home.component').then(m => m.HomeComponent)
   },
   {
     path: 'movies',
@@ -29,6 +29,10 @@ export const routes: Routes = [
     path: 'admin/purchases',
     canActivate: [adminGuard],
     loadComponent: () => import('@app/modules/purchase/pages/purchase-manage/purchase-manage.component').then(m => m.PurchaseManageComponent)
+  },
+  {
+    path: 'customer/purchases',
+    loadComponent: () => import('@modules/customer/customer-purchases/customer-purchases.component').then(m => m.CustomerPurchasesComponent)
   },
   {
     path: 'auth/register',

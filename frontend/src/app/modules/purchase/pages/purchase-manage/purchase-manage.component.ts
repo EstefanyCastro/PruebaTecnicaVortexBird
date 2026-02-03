@@ -124,17 +124,17 @@ export class PurchaseManageComponent implements OnInit {
   applyFilters(): void {
     this.filteredPurchases = this.purchases.filter(purchase => {
       // Movie filter
-      if (this.selectedMovieId && purchase.movieId !== this.selectedMovieId) {
+      if (this.selectedMovieId && Number(this.selectedMovieId) !== purchase.movieId) {
         return false;
       }
 
       // Customer filter
-      if (this.selectedCustomerId && purchase.customerId !== this.selectedCustomerId) {
+      if (this.selectedCustomerId && Number(this.selectedCustomerId) !== purchase.customerId) {
         return false;
       }
 
       // Status filter
-      if (this.selectedStatus && purchase.status !== this.selectedStatus) {
+      if (this.selectedStatus && this.selectedStatus !== '' && purchase.status !== this.selectedStatus) {
         return false;
       }
 
@@ -197,10 +197,14 @@ export class PurchaseManageComponent implements OnInit {
   }
 
   getTotalRevenue(): number {
-    return this.filteredPurchases.reduce((sum, purchase) => sum + purchase.totalAmount, 0);
+    return this.filteredPurchases
+      .filter(purchase => purchase.status !== 'CANCELLED')
+      .reduce((sum, purchase) => sum + purchase.totalAmount, 0);
   }
 
   getTotalTickets(): number {
-    return this.filteredPurchases.reduce((sum, purchase) => sum + purchase.quantity, 0);
+    return this.filteredPurchases
+      .filter(purchase => purchase.status !== 'CANCELLED')
+      .reduce((sum, purchase) => sum + purchase.quantity, 0);
   }
 }

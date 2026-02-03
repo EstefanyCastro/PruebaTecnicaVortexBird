@@ -44,6 +44,9 @@ class TicketPurchaseServiceTest {
     @Mock
     private IMovieService movieService;
 
+    @Mock
+    private IEmailService emailService;
+
     @InjectMocks
     private TicketPurchaseService purchaseService;
 

@@ -33,4 +33,8 @@ export class TicketPurchaseService {
   getMoviePurchases(movieId: number): Observable<ApiResponse<TicketPurchase[]>> {
     return this.http.get<ApiResponse<TicketPurchase[]>>(`${this.apiUrl}/movie/${movieId}`);
   }
+
+  cancelPurchase(purchaseId: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${purchaseId}`);
+  }
 }

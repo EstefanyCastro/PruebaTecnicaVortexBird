@@ -31,6 +31,14 @@ spring.mail:
         starttls:
           enable: false
 
+# AWS S3 Configuration (mock values for tests)
+aws:
+  s3:
+    bucket-name: test-bucket
+    region: us-east-1
+    access-key: test-access-key
+    secret-key: test-secret-key
+
 logging:
   level:
     com.vortexbird: INFO

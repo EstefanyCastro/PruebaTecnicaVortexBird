@@ -1,0 +1,10 @@
+/* App container with padding for fixed navbar */
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+}
+
+router-outlet + * {
+  padding-top: 76px;
+}

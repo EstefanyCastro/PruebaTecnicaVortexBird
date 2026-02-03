@@ -26,4 +26,7 @@ public interface IMovieRepository extends JpaRepository<Movie, Long> {
 
     @Query("SELECT m FROM Movie m WHERE LOWER(m.genre) = LOWER(:genre) AND m.isEnabled = true")
     List<Movie> findByGenre(@Param("genre") String genre);
+    
+    @Query("SELECT m FROM Movie m WHERE LOWER(m.title) LIKE LOWER(CONCAT('%', :name, '%')) AND LOWER(m.genre) = LOWER(:genre) AND m.isEnabled = true")
+    List<Movie> findByTitleAndGenre(@Param("name") String title, @Param("genre") String genre);
 }

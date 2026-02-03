@@ -91,14 +91,25 @@ public class MovieService implements IMovieService {
     public List<Movie> searchMovies(String title, String genre) {
         log.info("Searching movies with title: '{}' and genre: '{}'", title, genre);
         
-        if (title != null && !title.trim().isEmpty()) {
+        boolean hasTitle = title != null && !title.trim().isEmpty();
+        boolean hasGenre = genre != null && !genre.trim().isEmpty();
+        
+        // Both title and genre
+        if (hasTitle && hasGenre) {
+            return movieRepository.findByTitleAndGenre(title, genre);
+        }
+        
+        // Only title
+        if (hasTitle) {
             return movieRepository.findByTitle(title);
         }
         
-        if (genre != null && !genre.trim().isEmpty()) {
+        // Only genre
+        if (hasGenre) {
             return movieRepository.findByGenre(genre);
         }
         
+        // No filters
         return getAllMovies();
     }
 }

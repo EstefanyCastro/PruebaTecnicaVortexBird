@@ -52,10 +52,15 @@ export class HomeComponent implements OnInit {
     const uniqueGenres = new Set<string>();
     this.movies.forEach(movie => {
       if (movie.genre) {
-        uniqueGenres.add(movie.genre);
+        // Normalizar: minúsculas y sin espacios extra, luego capitalizar primera letra
+        const normalized = movie.genre.trim().toLowerCase();
+        uniqueGenres.add(normalized);
       }
     });
-    this.genres = Array.from(uniqueGenres).sort();
+    // Convertir a array, capitalizar primera letra de cada palabra y ordenar
+    this.genres = Array.from(uniqueGenres)
+      .map(genre => genre.charAt(0).toUpperCase() + genre.slice(1))
+      .sort();
   }
 
   filterMovies(): void {
