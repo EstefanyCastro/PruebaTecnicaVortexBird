@@ -34,12 +34,12 @@ export class MovieService {
     return this.http.get<ApiResponse<Movie>>(`${this.apiUrl}/${id}`);
   }
 
-  createMovie(request: CreateMovieRequest): Observable<ApiResponse<Movie>> {
-    return this.http.post<ApiResponse<Movie>>(this.apiUrl, request);
+  createMovieWithImage(formData: FormData): Observable<ApiResponse<Movie>> {
+    return this.http.post<ApiResponse<Movie>>(this.apiUrl, formData);
   }
 
-  updateMovie(id: number, request: CreateMovieRequest): Observable<ApiResponse<Movie>> {
-    return this.http.put<ApiResponse<Movie>>(`${this.apiUrl}/${id}`, request);
+  updateMovieWithImage(id: number, formData: FormData): Observable<ApiResponse<Movie>> {
+    return this.http.put<ApiResponse<Movie>>(`${this.apiUrl}/${id}`, formData);
   }
 
   disableMovie(id: number): Observable<ApiResponse<void>> {

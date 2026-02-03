@@ -25,7 +25,6 @@ public class MovieDTO {
     @Size(min = 10, max = 2000, message = "Description must be between 10 and 2000 characters")
     private String description;
     
-    @NotBlank(message = "Image URL is required")
     @Pattern(regexp = "^https?://.*", message = "Image URL must be a valid HTTP/HTTPS URL")
     private String imageUrl;
     

@@ -18,8 +18,8 @@ import { CreateTicketPurchase, TicketPurchase } from '@models/ticket-purchase.mo
   selector: 'app-purchase',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './purchase.component.html',
-  styleUrls: ['./purchase.component.css']
+  templateUrl: './create-purchase.component.html',
+  styleUrls: ['./create-purchase.component.css']
 })
 export class PurchaseComponent implements OnInit {
   purchaseForm!: FormGroup;

@@ -64,4 +64,23 @@ INSERT INTO movies (title, description, image_url, duration_minutes, genre, pric
 INSERT INTO customers (email, phone, first_name, last_name, password, role, is_enabled, created_at) VALUES
 ('admin@movieticket.com', '3001234567', 'Admin', 'Sistema', 'Admin1234', 'ADMIN', true, CURRENT_TIMESTAMP),
 ('cliente@example.com', '3009876543', 'Cliente', 'Demo', 'Cliente1234', 'CUSTOMER', true, CURRENT_TIMESTAMP);
+('maria.garcia@email.com', '3101234567', 'María', 'García', 'Maria1234', 'CUSTOMER', true, CURRENT_TIMESTAMP),
+('carlos.lopez@email.com', '3202345678', 'Carlos', 'López', 'Carlos1234', 'CUSTOMER', true, CURRENT_TIMESTAMP),
+('ana.martinez@email.com', '3303456789', 'Ana', 'Martínez', 'Ana1234', 'CUSTOMER', true, CURRENT_TIMESTAMP);
 
+-- Insert sample ticket purchases
+INSERT INTO ticket_purchases (customer_id, movie_id, quantity, unit_price, total_amount, status, card_last_four, card_holder_name, purchase_date, confirmation_code) VALUES
+-- Cliente Demo compra boletas para Avengers
+(2, 1, 2, 15000, 30000, 'CONFIRMED', '1234', 'CLIENTE DEMO', CURRENT_TIMESTAMP - INTERVAL '5 days', 'CONF-001-2024'),
+-- María García compra para Inception
+(3, 3, 3, 14000, 42000, 'CANCELLED', '5678', 'MARIA GARCIA', CURRENT_TIMESTAMP - INTERVAL '3 days', 'CONF-002-2024'),
+-- Carlos López compra para The Dark Knight
+(4, 4, 1, 13500, 13500, 'CONFIRMED', '9012', 'CARLOS LOPEZ', CURRENT_TIMESTAMP - INTERVAL '2 days', 'CONF-003-2024'),
+-- Ana Martínez compra para El Padrino
+(5, 2, 4, 12000, 48000, 'CONFIRMED', '3456', 'ANA MARTINEZ', CURRENT_TIMESTAMP - INTERVAL '1 day', 'CONF-004-2024'),
+-- María García compra nuevamente para Pulp Fiction
+(3, 5, 2, 11000, 22000, 'CONFIRMED', '5678', 'MARIA GARCIA', CURRENT_TIMESTAMP - INTERVAL '12 hours', 'CONF-005-2024'),
+-- Carlos López compra para Avengers
+(4, 1, 2, 15000, 30000, 'CANCELLED', '9012', 'CARLOS LOPEZ', CURRENT_TIMESTAMP - INTERVAL '6 hours', 'CONF-006-2024'),
+-- Cliente Demo compra para Inception
+(2, 3, 1, 14000, 14000, 'CONFIRMED', '1234', 'CLIENTE DEMO', CURRENT_TIMESTAMP - INTERVAL '2 hours', 'CONF-007-2024');

@@ -2,14 +2,15 @@ package com.vortexbird.movieticket.controller;
 
 import com.vortexbird.movieticket.dto.MovieDTO;
 import com.vortexbird.movieticket.service.IMovieService;
+import com.vortexbird.movieticket.service.IStorageService;
 import com.vortexbird.movieticket.model.Movie;
 import com.vortexbird.movieticket.shared.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -26,15 +27,47 @@ import java.util.List;
 @Slf4j
 public class MovieController {
 
-    @Autowired
-    private IMovieService movieService;
+    private final IMovieService movieService;
+    private final IStorageService storageService;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<Movie>> createMovie(@Valid @RequestBody MovieDTO movieDTO) {
-        log.info("POST /movies - Creating movie: {}", movieDTO.getTitle());
-        Movie createdMovie = movieService.createMovie(movieDTO);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(createdMovie, "Movie created successfully"));
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<ApiResponse<Movie>> createMovie(
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("genre") String genre,
+            @RequestParam("duration") int duration,
+            @RequestParam("price") double price,
+            @RequestParam(value = "image", required = false) MultipartFile image) {
+        
+        log.info("POST /movies - Creating movie: {}", title);
+        
+        try {
+            String imageUrl = null;
+            if (image != null && !image.isEmpty()) {
+                imageUrl = storageService.uploadFile(image);
+                log.info("Image uploaded to S3: {}", imageUrl);
+            }
+            
+            MovieDTO movieDTO = new MovieDTO();
+            movieDTO.setTitle(title);
+            movieDTO.setDescription(description);
+            movieDTO.setGenre(genre);
+            movieDTO.setDuration(duration);
+            movieDTO.setPrice(price);
+            movieDTO.setImageUrl(imageUrl);
+            
+            Movie createdMovie = movieService.createMovie(movieDTO);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ApiResponse.success(createdMovie, "Movie created successfully"));
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid data: {}", e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error creating movie: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Failed to create movie"));
+        }
     }
 
     @GetMapping
@@ -53,13 +86,47 @@ public class MovieController {
         return ResponseEntity.ok(ApiResponse.success(movie, "Movie retrieved successfully"));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
     public ResponseEntity<ApiResponse<Movie>> updateMovie(
             @PathVariable Long id,
-            @Valid @RequestBody MovieDTO movieDTO) {
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("genre") String genre,
+            @RequestParam("duration") int duration,
+            @RequestParam("price") double price,
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "imageUrl", required = false) String existingImageUrl) {
+        
         log.info("PUT /movies/{} - Updating movie", id);
-        Movie updatedMovie = movieService.updateMovie(id, movieDTO);
-        return ResponseEntity.ok(ApiResponse.success(updatedMovie, "Movie updated successfully"));
+        
+        try {
+            String imageUrl = existingImageUrl;
+            
+            // Si se envió una nueva imagen, subirla a S3
+            if (image != null && !image.isEmpty()) {
+                imageUrl = storageService.uploadFile(image);
+                log.info("New image uploaded to S3: {}", imageUrl);
+            }
+            
+            MovieDTO movieDTO = new MovieDTO();
+            movieDTO.setTitle(title);
+            movieDTO.setDescription(description);
+            movieDTO.setGenre(genre);
+            movieDTO.setDuration(duration);
+            movieDTO.setPrice(price);
+            movieDTO.setImageUrl(imageUrl);
+            
+            Movie updatedMovie = movieService.updateMovie(id, movieDTO);
+            return ResponseEntity.ok(ApiResponse.success(updatedMovie, "Movie updated successfully"));
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid data: {}", e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error updating movie: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Failed to update movie"));
+        }
     }
 
     @DeleteMapping("/{id}")

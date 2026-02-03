@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MovieService } from '@core/services/movie.service';
+import { StorageService } from '@core/services/storage.service';
 import { CreateMovieRequest } from '@models/movie.model';
 
 /**
@@ -24,21 +25,69 @@ export class CreateMovieComponent implements OnInit {
   isEditMode = false;
   movieId: number | null = null;
   pageTitle = 'Crear Película';
+  
+  // Image upload properties
+  selectedFile: File | null = null;
+  imagePreview: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private movieService: MovieService,
+    private storageService: StorageService,
     private router: Router,
     private route: ActivatedRoute
   ) {
     this.movieForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(255)]],
       description: ['', [Validators.required, Validators.minLength(10)]],
-      imageUrl: ['', Validators.required],
       genre: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
       duration: ['', [Validators.required, Validators.min(1)]],
       price: ['', [Validators.required, Validators.min(0)]]
     });
+  }
+
+  /**
+   * Maneja la selección de imagen
+   */
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      
+      // Validar archivo
+      const validation = this.storageService.validateImage(file);
+      if (!validation.valid) {
+        this.error = validation.error || 'Archivo no válido';
+        this.selectedFile = null;
+        this.imagePreview = null;
+        return;
+      }
+
+      this.selectedFile = file;
+      this.error = null;
+
+      // Crear preview
+      this.storageService.createImagePreview(file).then(preview => {
+        this.imagePreview = preview;
+      }).catch(err => {
+        console.error('Error creating preview:', err);
+        this.error = 'Error al crear vista previa de la imagen';
+      });
+    }
+  }
+
+  /**
+   * Elimina la imagen seleccionada
+   */
+  removeImage(): void {
+    this.selectedFile = null;
+    this.imagePreview = null;
+    
+    // Limpiar el input file
+    const fileInput = document.getElementById('imageInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   }
 
   ngOnInit(): void {
@@ -63,11 +112,15 @@ export class CreateMovieComponent implements OnInit {
           this.movieForm.patchValue({
             title: response.data.title,
             description: response.data.description,
-            imageUrl: response.data.imageUrl,
             genre: response.data.genre,
             duration: response.data.duration,
             price: response.data.price
           });
+          
+          // Si tiene imagen, mostrarla en el preview
+          if (response.data.imageUrl) {
+            this.imagePreview = response.data.imageUrl;
+          }
         }
         this.loading = false;
       },
@@ -85,22 +138,34 @@ export class CreateMovieComponent implements OnInit {
       return;
     }
 
+    if (!this.isEditMode && !this.selectedFile) {
+      this.error = 'Por favor, seleccione una imagen para la película.';
+      return;
+    }
+
     this.loading = true;
     this.error = null;
     this.success = null;
 
-    const movieData: CreateMovieRequest = {
-      title: this.movieForm.value.title,
-      description: this.movieForm.value.description,
-      imageUrl: this.movieForm.value.imageUrl,
-      genre: this.movieForm.value.genre,
-      duration: parseInt(this.movieForm.value.duration),
-      price: parseFloat(this.movieForm.value.price)
-    };
+    const formData = new FormData();
+    formData.append('title', this.movieForm.value.title);
+    formData.append('description', this.movieForm.value.description);
+    formData.append('genre', this.movieForm.value.genre);
+    formData.append('duration', this.movieForm.value.duration.toString());
+    formData.append('price', this.movieForm.value.price.toString());
+    
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    }
+    
+    // Si estamos editando y hay una URL existente, enviarla
+    if (this.isEditMode && this.imagePreview && !this.selectedFile) {
+      formData.append('imageUrl', this.imagePreview);
+    }
 
     const operation = this.isEditMode && this.movieId
-      ? this.movieService.updateMovie(this.movieId, movieData)
-      : this.movieService.createMovie(movieData);
+      ? this.movieService.updateMovieWithImage(this.movieId, formData)
+      : this.movieService.createMovieWithImage(formData);
 
     operation.subscribe({
       next: (response) => {

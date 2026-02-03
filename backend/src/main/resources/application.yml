@@ -28,6 +28,14 @@ spring:
             required: true
         debug: false
 
+# AWS S3 Configuration
+aws:
+  s3:
+    bucket-name: ${AWS_S3_BUCKET_NAME:}
+    region: ${AWS_S3_REGION:us-east-2}
+    access-key: ${AWS_ACCESS_KEY_ID:}
+    secret-key: ${AWS_SECRET_ACCESS_KEY:}
+
 server:
   servlet:
     context-path: /api

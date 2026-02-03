@@ -47,18 +47,42 @@
         </span>
       </div>
 
-      <div class="form-group full-width">
-        <label for="imageUrl">URL de la Imagen *</label>
-        <input
-          id="imageUrl"
-          type="url"
-          formControlName="imageUrl"
-          placeholder="https://ejemplo.com/imagen.jpg"
-          [class.invalid]="movieForm.get('imageUrl')?.invalid && movieForm.get('imageUrl')?.touched"
-        />
-        <span class="error-message" *ngIf="movieForm.get('imageUrl')?.invalid && movieForm.get('imageUrl')?.touched">
-          La URL de la imagen es requerida
-        </span>
+      <!-- Image Upload Section -->
+      <div class="form-group full-width image-upload-section">
+        <label>Imagen de la Película {{ isEditMode ? '' : '*' }}</label>
+        <div class="image-upload-container">
+          <input
+            type="file"
+            id="imageInput"
+            accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+            (change)="onImageSelected($event)"
+            style="display: none"
+          />
+          
+          <div *ngIf="!imagePreview" class="upload-placeholder">
+            <i class="bi bi-cloud-upload upload-icon"></i>
+            <p>Seleccione una imagen para la película</p>
+            <label for="imageInput" class="btn btn-outline">
+              <i class="bi bi-folder2-open me-2"></i>Seleccionar Imagen
+            </label>
+            <small class="text-muted d-block mt-2">Formatos: JPG, PNG, GIF, WEBP (Máx. 5MB)</small>
+          </div>
+
+          <div *ngIf="imagePreview" class="image-preview-container">
+            <img [src]="imagePreview" alt="Vista previa" class="image-preview" />
+            <div class="preview-actions">
+              <button type="button" class="btn btn-danger btn-sm" (click)="removeImage()">
+                <i class="bi bi-trash me-1"></i>Eliminar
+              </button>
+              <label for="imageInput" class="btn btn-secondary btn-sm">
+                <i class="bi bi-arrow-repeat me-1"></i>Cambiar
+              </label>
+            </div>
+            <small class="text-muted" *ngIf="selectedFile">
+              {{ selectedFile.name }} ({{ (selectedFile.size / 1024).toFixed(2) }} KB)
+            </small>
+          </div>
+        </div>
       </div>
 
       <div class="form-row">

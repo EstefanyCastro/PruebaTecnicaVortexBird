@@ -28,7 +28,7 @@ export const routes: Routes = [
   {
     path: 'admin/purchases',
     canActivate: [adminGuard],
-    loadComponent: () => import('@modules/purchase/purchase-manage/purchase-manage.component').then(m => m.PurchaseManageComponent)
+    loadComponent: () => import('@app/modules/purchase/pages/purchase-manage/purchase-manage.component').then(m => m.PurchaseManageComponent)
   },
   {
     path: 'auth/register',
@@ -40,7 +40,7 @@ export const routes: Routes = [
   },
   {
     path: 'purchase/:id',
-    loadComponent: () => import('@modules/purchase/purchase.component').then(m => m.PurchaseComponent)
+    loadComponent: () => import('@app/modules/purchase/pages/create-purchase/create-purchase.component').then(m => m.PurchaseComponent)
   },
   {
     path: '**',
