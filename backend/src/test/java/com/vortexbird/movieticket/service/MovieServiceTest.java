@@ -224,12 +224,12 @@ class MovieServiceTest {
     }
 
     @Test
-    @DisplayName("Should prioritize title search over genre")
+    @DisplayName("Should search by title and genre when both provided")
     void testSearchMovies_TitlePriorityOverGenre() {
         // Arrange
         String searchTitle = "Test";
         String searchGenre = "Action";
-        when(movieRepository.findByTitle(searchTitle)).thenReturn(Arrays.asList(movie));
+        when(movieRepository.findByTitleAndGenre(searchTitle, searchGenre)).thenReturn(Arrays.asList(movie));
 
         // Act
         List<Movie> result = movieService.searchMovies(searchTitle, searchGenre);
@@ -237,7 +237,8 @@ class MovieServiceTest {
         // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(movieRepository, times(1)).findByTitle(searchTitle);
+        verify(movieRepository, times(1)).findByTitleAndGenre(searchTitle, searchGenre);
+        verify(movieRepository, never()).findByTitle(anyString());
         verify(movieRepository, never()).findByGenre(anyString());
     }
 }
