@@ -124,29 +124,34 @@ export class PurchaseManageComponent implements OnInit {
   applyFilters(): void {
     this.filteredPurchases = this.purchases.filter(purchase => {
       // Movie filter
-      if (this.selectedMovieId && Number(this.selectedMovieId) !== purchase.movieId) {
+      if (this.selectedMovieId !== null && this.selectedMovieId !== '' && 
+          Number(this.selectedMovieId) !== purchase.movieId) {
         return false;
       }
 
       // Customer filter
-      if (this.selectedCustomerId && Number(this.selectedCustomerId) !== purchase.customerId) {
+      if (this.selectedCustomerId !== null && this.selectedCustomerId !== '' && 
+          Number(this.selectedCustomerId) !== purchase.customerId) {
         return false;
       }
 
       // Status filter
-      if (this.selectedStatus && this.selectedStatus !== '' && purchase.status !== this.selectedStatus) {
+      if (this.selectedStatus && purchase.status !== this.selectedStatus) {
         return false;
       }
 
       // Search term (customer name, email, or movie title)
-      if (this.searchTerm) {
-        const term = this.searchTerm.toLowerCase();
-        return (
+      if (this.searchTerm && this.searchTerm.trim()) {
+        const term = this.searchTerm.toLowerCase().trim();
+        const matchFound = 
           purchase.customerName.toLowerCase().includes(term) ||
           purchase.customerEmail.toLowerCase().includes(term) ||
           purchase.movieTitle.toLowerCase().includes(term) ||
-          purchase.confirmationCode.toLowerCase().includes(term)
-        );
+          purchase.confirmationCode.toLowerCase().includes(term);
+        
+        if (!matchFound) {
+          return false;
+        }
       }
 
       return true;
@@ -158,7 +163,7 @@ export class PurchaseManageComponent implements OnInit {
     this.selectedCustomerId = null;
     this.selectedStatus = '';
     this.searchTerm = '';
-    this.filteredPurchases = [...this.purchases];
+    this.applyFilters();
   }
 
   goBack(): void {

@@ -1,18 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { CustomerService } from '@core/services/customer.service';
 import { Customer } from '@models/customer.model';
 
 @Component({
   selector: 'app-customer-manage',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './customer-manage.component.html',
   styleUrl: './customer-manage.component.css'
 })
 export class CustomerManageComponent implements OnInit {
   customers: Customer[] = [];
+  filteredCustomers: Customer[] = [];
+  searchTerm: string = '';
   loading = false;
   errorMessage = '';
   customerToToggle: Customer | null = null;
@@ -41,6 +44,7 @@ export class CustomerManageComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.customers = response.data;
+          this.filteredCustomers = [...this.customers];
           this.updateTotalPages();
           this.loading = false;
         }
@@ -107,15 +111,35 @@ export class CustomerManageComponent implements OnInit {
     });
   }
 
+  filterCustomers(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredCustomers = [...this.customers];
+    } else {
+      const term = this.searchTerm.toLowerCase().trim();
+      this.filteredCustomers = this.customers.filter(customer =>
+        customer.firstName.toLowerCase().includes(term) ||
+        customer.lastName.toLowerCase().includes(term) ||
+        customer.email.toLowerCase().includes(term)
+      );
+    }
+    this.currentPage = 1;
+    this.updateTotalPages();
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.filterCustomers();
+  }
+
   // Pagination methods
   get paginatedCustomers(): Customer[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    return this.customers.slice(startIndex, endIndex);
+    return this.filteredCustomers.slice(startIndex, endIndex);
   }
 
   updateTotalPages(): void {
-    this.totalPages = Math.ceil(this.customers.length / this.itemsPerPage);
+    this.totalPages = Math.ceil(this.filteredCustomers.length / this.itemsPerPage);
   }
 
   goToPage(page: number): void {

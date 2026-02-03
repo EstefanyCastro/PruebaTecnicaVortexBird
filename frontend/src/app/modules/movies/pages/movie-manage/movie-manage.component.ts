@@ -1,18 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { MovieService } from '@core/services/movie.service';
 import { Movie } from '@models/movie.model';
 
 @Component({
   selector: 'app-movie-manage',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './movie-manage.component.html',
   styleUrl: './movie-manage.component.css'
 })
 export class MovieManageComponent implements OnInit {
   movies: Movie[] = [];
+  filteredMovies: Movie[] = [];
+  searchTerm: string = '';
   loading = false;
   errorMessage = '';
   movieToToggle: Movie | null = null;
@@ -20,7 +23,7 @@ export class MovieManageComponent implements OnInit {
   
   // Pagination
   currentPage = 1;
-  itemsPerPage = 3;
+  itemsPerPage = 10;
   totalPages = 1;
   Math = Math;
 
@@ -41,6 +44,7 @@ export class MovieManageComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.movies = response.data;
+          this.filteredMovies = [...this.movies];
           this.updateTotalPages();
           this.loading = false;
         }
@@ -119,15 +123,33 @@ export class MovieManageComponent implements OnInit {
     return enabled ? 'Habilitada' : 'Inhabilitada';
   }
 
+  filterMovies(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredMovies = [...this.movies];
+    } else {
+      const term = this.searchTerm.toLowerCase().trim();
+      this.filteredMovies = this.movies.filter(movie =>
+        movie.title.toLowerCase().includes(term)
+      );
+    }
+    this.currentPage = 1;
+    this.updateTotalPages();
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.filterMovies();
+  }
+
   // Pagination methods
   get paginatedMovies(): Movie[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    return this.movies.slice(startIndex, endIndex);
+    return this.filteredMovies.slice(startIndex, endIndex);
   }
 
   updateTotalPages(): void {
-    this.totalPages = Math.ceil(this.movies.length / this.itemsPerPage);
+    this.totalPages = Math.ceil(this.filteredMovies.length / this.itemsPerPage);
   }
 
   goToPage(page: number): void {

@@ -41,3 +41,4 @@ logs/
 build/
 *.ear
 .settings/
+util/

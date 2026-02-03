@@ -46,7 +46,7 @@ Thumbs.db
 
 # Git
 .git/
-.github/
+.github/instructions/
 
 # Testing
 .jest/

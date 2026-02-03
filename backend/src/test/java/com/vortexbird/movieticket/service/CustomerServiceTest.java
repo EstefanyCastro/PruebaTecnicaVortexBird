@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +41,9 @@ class CustomerServiceTest {
 
     @Mock
     private ICustomerRepository customerRepository;
+
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
 
     @InjectMocks
     private CustomerService customerService;
@@ -68,7 +72,7 @@ class CustomerServiceTest {
         customer.setPhone("3001234567");
         customer.setFirstName("John");
         customer.setLastName("Doe");
-        customer.setPassword("Password123");
+        customer.setPassword("$2a$10$hashedPasswordExample123456789"); // BCrypt hashed password
         customer.setRole(Role.CUSTOMER);
         customer.setIsEnabled(true);
     }
@@ -78,6 +82,7 @@ class CustomerServiceTest {
     void testRegister_Success() {
         // Arrange
         when(customerRepository.existsByEmail(validRegisterDTO.getEmail())).thenReturn(false);
+        when(passwordEncoder.encode(validRegisterDTO.getPassword())).thenReturn("$2a$10$hashedPasswordExample123456789");
         when(customerRepository.save(any(Customer.class))).thenReturn(customer);
 
         // Act
@@ -90,6 +95,7 @@ class CustomerServiceTest {
         assertEquals(customer.getLastName(), result.getLastName());
         assertEquals(Role.CUSTOMER, result.getRole());
         verify(customerRepository).existsByEmail(validRegisterDTO.getEmail());
+        verify(passwordEncoder).encode(validRegisterDTO.getPassword());
         verify(customerRepository).save(any(Customer.class));
     }
 
@@ -114,6 +120,7 @@ class CustomerServiceTest {
     void testLogin_Success() {
         // Arrange
         when(customerRepository.findByEmail(validLoginDTO.getEmail())).thenReturn(Optional.of(customer));
+        when(passwordEncoder.matches(validLoginDTO.getPassword(), customer.getPassword())).thenReturn(true);
 
         // Act
         LoginResponseDTO result = customerService.login(validLoginDTO);
@@ -126,6 +133,7 @@ class CustomerServiceTest {
         assertEquals(customer.getLastName(), result.getLastName());
         assertEquals("CUSTOMER", result.getRole());
         verify(customerRepository).findByEmail(validLoginDTO.getEmail());
+        verify(passwordEncoder).matches(validLoginDTO.getPassword(), customer.getPassword());
     }
 
     @Test
@@ -149,6 +157,7 @@ class CustomerServiceTest {
         // Arrange
         validLoginDTO.setPassword("WrongPassword");
         when(customerRepository.findByEmail(validLoginDTO.getEmail())).thenReturn(Optional.of(customer));
+        when(passwordEncoder.matches(validLoginDTO.getPassword(), customer.getPassword())).thenReturn(false);
 
         // Act & Assert
         BusinessException exception = assertThrows(

@@ -11,6 +11,7 @@ import com.vortexbird.movieticket.shared.exception.BusinessException;
 import com.vortexbird.movieticket.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * Implementation of Customer Service.
- * Simplified version for development - plain text passwords.
+ * Uses BCrypt for password hashing and verification.
  */
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 public class CustomerService implements ICustomerService {
 
     private final ICustomerRepository customerRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public Customer register(RegisterCustomerDTO dto) {
@@ -43,7 +45,7 @@ public class CustomerService implements ICustomerService {
         customer.setPhone(dto.getPhone());
         customer.setFirstName(dto.getFirstName());
         customer.setLastName(dto.getLastName());
-        customer.setPassword(dto.getPassword());
+        customer.setPassword(passwordEncoder.encode(dto.getPassword()));
         customer.setRole(Role.CUSTOMER);
         
         Customer savedCustomer = customerRepository.save(customer);
@@ -66,7 +68,7 @@ public class CustomerService implements ICustomerService {
             throw new BusinessException("Account is disabled");
         }
         
-        if (!dto.getPassword().equals(customer.getPassword())) {
+        if (!passwordEncoder.matches(dto.getPassword(), customer.getPassword())) {
             log.warn("Login failed: Invalid password for email: {}", dto.getEmail());
             throw new BusinessException("Invalid credentials");
         }

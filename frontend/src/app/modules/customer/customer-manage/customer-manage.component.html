@@ -12,6 +12,34 @@
     </div>
   </div>
 
+  <!-- Search Bar -->
+  <div class="search-container" *ngIf="!loading">
+    <div class="search-wrapper">
+      <i class="bi bi-search search-icon"></i>
+      <input
+        type="text"
+        class="form-control search-input"
+        placeholder="Buscar cliente por nombre o email..."
+        [(ngModel)]="searchTerm"
+        (input)="filterCustomers()"
+      />
+      <button
+        class="btn btn-clear"
+        *ngIf="searchTerm"
+        (click)="clearSearch()"
+        type="button"
+      >
+        <i class="bi bi-x-circle"></i>
+      </button>
+    </div>
+    <div class="search-info" *ngIf="searchTerm && filteredCustomers.length !== customers.length">
+      <small class="text-muted">
+        <i class="bi bi-funnel me-1"></i>
+        {{ filteredCustomers.length }} resultado(s) encontrado(s)
+      </small>
+    </div>
+  </div>
+
   <!-- Confirmation Panel -->
   <div class="confirmation-panel" *ngIf="showConfirmation && customerToToggle">
     <div class="confirmation-content">
@@ -99,11 +127,11 @@
     </table>
 
     <!-- Pagination Controls -->
-    <div class="d-flex justify-content-between align-items-center mt-3" *ngIf="customers.length > 0">
+    <div class="d-flex justify-content-between align-items-center mt-3" *ngIf="filteredCustomers.length > 0">
       <div class="text-muted">
         Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a 
-        {{ Math.min(currentPage * itemsPerPage, customers.length) }} de 
-        {{ customers.length }} clientes
+        {{ Math.min(currentPage * itemsPerPage, filteredCustomers.length) }} de 
+        {{ filteredCustomers.length }} clientes
       </div>
       <nav aria-label="Paginación de clientes">
         <ul class="pagination mb-0">
@@ -127,9 +155,19 @@
     </div>
 
     <!-- No Customers Message -->
-    <div class="text-center py-5" *ngIf="customers.length === 0">
+    <div class="text-center py-5" *ngIf="filteredCustomers.length === 0 && !searchTerm">
       <i class="bi bi-people fs-1 text-muted"></i>
       <p class="text-muted mt-3">No hay clientes registrados</p>
+    </div>
+
+    <!-- No Search Results Message -->
+    <div class="text-center py-5" *ngIf="filteredCustomers.length === 0 && searchTerm">
+      <i class="bi bi-search fs-1 text-muted"></i>
+      <p class="text-muted mt-3">No se encontraron clientes con "{{ searchTerm }}"</p>
+      <button class="btn btn-secondary mt-2" (click)="clearSearch()">
+        <i class="bi bi-arrow-counterclockwise me-2"></i>
+        Limpiar Búsqueda
+      </button>
     </div>
   </div>
 </div>

@@ -60,13 +60,19 @@ INSERT INTO movies (title, description, image_url, duration_minutes, genre, pric
 ('The Dark Knight', 'Cuando la amenaza conocida como el Joker emerge de su misterioso pasado, causa estragos y caos en la gente de Gotham.', 'https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg', 152, 'Acción', 13500, true),
 ('Pulp Fiction', 'Las vidas de dos sicarios de la mafia, un boxeador, la esposa de un gángster y dos bandidos se entrelazan en cuatro historias de violencia y redención.', 'https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg', 154, 'Drama', 11000, true);
 
--- Insert sample customers (password: Test1234 - plain text for development)
+-- Insert sample customers (passwords are BCrypt hashed)
+-- Original passwords for testing:
+--   admin@movieticket.com: Admin1234
+--   cliente@example.com: Cliente1234
+--   maria.garcia@email.com: Maria1234
+--   carlos.lopez@email.com: Carlos1234
+--   ana.martinez@email.com: Ana1234
 INSERT INTO customers (email, phone, first_name, last_name, password, role, is_enabled, created_at) VALUES
-('admin@movieticket.com', '3001234567', 'Admin', 'Sistema', 'Admin1234', 'ADMIN', true, CURRENT_TIMESTAMP),
-('cliente@example.com', '3009876543', 'Cliente', 'Demo', 'Cliente1234', 'CUSTOMER', true, CURRENT_TIMESTAMP),
-('maria.garcia@email.com', '3101234567', 'María', 'García', 'Maria1234', 'CUSTOMER', true, CURRENT_TIMESTAMP),
-('carlos.lopez@email.com', '3202345678', 'Carlos', 'López', 'Carlos1234', 'CUSTOMER', true, CURRENT_TIMESTAMP),
-('ana.martinez@email.com', '3303456789', 'Ana', 'Martínez', 'Ana1234', 'CUSTOMER', true, CURRENT_TIMESTAMP);
+('admin@movieticket.com', '3001234567', 'Admin', 'Sistema', '$2a$10$CWJWU.1or/vQbGC3toRltu//21zpsetQP57spEFfxEuCeVV5vk.ii', 'ADMIN', true, CURRENT_TIMESTAMP),
+('cliente@example.com', '3009876543', 'Cliente', 'Demo', '$2a$10$vI19TdCxpcfFAHcFpJJnXeU6lY14tPE22hsjOn9d05cdY2w4XpXIS', 'CUSTOMER', true, CURRENT_TIMESTAMP),
+('maria.garcia@email.com', '3101234567', 'María', 'García', '$2a$10$kUd6juPHiYE.qCCbHA58kO3i/LkX2HoZfuatAdlJDcDgxZwKEs0ZO', 'CUSTOMER', true, CURRENT_TIMESTAMP),
+('carlos.lopez@email.com', '3202345678', 'Carlos', 'López', '$2a$10$3i3BRc9gQSuwm40LX3Z9ye1oxcWSRFf3GD3eyNxdWbg0M6gPUUOQu', 'CUSTOMER', true, CURRENT_TIMESTAMP),
+('ana.martinez@email.com', '3303456789', 'Ana', 'Martínez', '$2a$10$nluKXQOd3RTLxSrYfs.ciu/KU18VaPHi0cvlX4s6MbVUTue9kAwqu', 'CUSTOMER', true, CURRENT_TIMESTAMP);
 
 -- Insert sample ticket purchases
 INSERT INTO ticket_purchases (customer_id, movie_id, quantity, unit_price, total_amount, status, card_last_four, card_holder_name, purchase_date, confirmation_code) VALUES

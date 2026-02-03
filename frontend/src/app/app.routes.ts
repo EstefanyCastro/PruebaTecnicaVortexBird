@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from '@core/guards/admin.guard';
+import { customerGuard } from '@core/guards/customer.guard';
 
 /**
  * Application routes configuration.
@@ -32,6 +33,7 @@ export const routes: Routes = [
   },
   {
     path: 'customer/purchases',
+    canActivate: [customerGuard],
     loadComponent: () => import('@modules/customer/customer-purchases/customer-purchases.component').then(m => m.CustomerPurchasesComponent)
   },
   {
@@ -43,6 +45,7 @@ export const routes: Routes = [
     loadComponent: () => import('@modules/auth/login/login.component').then(m => m.LoginComponent)
   },
   {
+    canActivate: [customerGuard],
     path: 'purchase/:id',
     loadComponent: () => import('@app/modules/purchase/pages/create-purchase/create-purchase.component').then(m => m.PurchaseComponent)
   },
